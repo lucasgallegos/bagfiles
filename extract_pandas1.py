@@ -56,29 +56,35 @@ tz_low = np.zeros(tz.size)
 
 fs = 124.956672444 #sampling frequency len(fx)/57.7 subject to change
 
-fc = 55# Cut-off frequency of the filter
+fc = 55 # Cut-off frequency of the filter
 w = fc / (fs / 2) # Normalize the frequency
-b, a = signal.butter(5, w, 'low')
+b, a = signal.butter(3, w, 'low')
 
-zi_x = signal.lfilter_zi(b,a) #FIGURE THIS SHIT OUT
+zi = signal.lfilter_zi(b,a) #This sets the initial state so that initial values match
 
 for data in fx:
-	FX.append(signal.lfilter(b, a, [data])) #Forward filters
+	z_x , y_x = signal.lfilter(b, a, [data],zi=zi*fx[0]) #Forward filters
+	FX.append(z_x)
 
 for data in fy:
-	FY.append(signal.lfilter(b, a, [data]))
+	z_y , y_y = signal.lfilter(b, a, [data], zi=zi*fy[0])
+	FY.append(z_y)
 
 for data in fz:
-	FZ.append(signal.lfilter(b, a, [data]))
+	z_z , y_z = signal.lfilter(b, a, [data], zi=zi*fz[0])
+	FZ.append(z_z)
 
 for data in tx:
-	TX.append(signal.lfilter(b, a, [data]))
+	z_tx , y_tx = signal.lfilter(b, a, [data], zi=zi*tx[0])
+	TX.append(z_tx)
 
 for data in ty:
-	TY.append(signal.lfilter(b, a, [data]))
+	z_ty , y_ty = signal.lfilter(b, a, [data], zi=zi*ty[0])
+	TY.append(z_ty)
 
 for data in tz:
-	TZ.append(signal.lfilter(b, a, [data]))
+	z_tz , y_tz = signal.lfilter(b, a, [data], zi=zi*tz[0])
+	TZ.append(z_tz)
 
 ##############################################################################
 
