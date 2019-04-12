@@ -10,7 +10,7 @@ from moving_average import MovingAverageFilter
 # Do the following in Terminal with a Roscore Running
 # $rostopic echo -b <name>.bag -p /wrench > <name>.csv
 
-data = pd.read_csv("ur3_wrench_noforces.csv") #reads the data from the csv file
+data = pd.read_csv("ur3_wrench.csv") #reads the data from the csv file
 
 time = data["%time"]-(data["%time"][0]) #Pulls and normalizes the data to start from t=0
 
@@ -22,7 +22,7 @@ tx = data["field.wrench.torque.x"]
 ty = data["field.wrench.torque.y"]
 tz = data["field.wrench.torque.z"]
 
-time = time.values #converts to np array
+time = (time.values)/1e9 #converts to np array
 
 fx = fx.values
 fy = fy.values
@@ -176,68 +176,74 @@ for data in tz:
 	ma_filter_estimates_tz.append(ma_filter.current_state())
 
 #Forces
-plt.subplot(3,2,1)
+plt.subplot(6,2,1)
 plt.plot(time,fx, label='No Filter')
 plt.plot(time, FX, label='Low Pass Butterworth',linewidth=1)
 plt.plot(time,kalman_filter_est_fx, label='Single State Kalman')
 plt.plot(time,ma_filter_estimates_fx, label='Moving Average')
 plt.legend()
+plt.xlim(10,50)
 plt.xlabel('time [s]')
 plt.ylabel('Fx [N]')
-plt.title('Force')
+#plt.title('Force')
 
-plt.subplot(3,2,3)
+plt.subplot(6,2,3)
 plt.plot(time,fy, label='No Filter')
 plt.plot(time, FY, label='LowPassButterworth',linewidth=1)
 plt.plot(time,kalman_filter_est_fy, label='Single State Kalman')
 plt.plot(time,ma_filter_estimates_fy, label='Moving Average')
 plt.legend()
+plt.xlim(10,50)
 plt.xlabel('time [s]')
 plt.ylabel('Fy [N]')
 
 
-plt.subplot(3,2,5)
+plt.subplot(6,2,5)
 plt.plot(time,fz, label='No Filter')
 plt.plot(time, FZ, label='LowPassButterworth',linewidth=1)
 plt.plot(time,kalman_filter_est_fz, label='Single State Kalman')
 plt.plot(time,ma_filter_estimates_fz, label='Moving Average')
 plt.legend()
+plt.xlim(10,50)
 plt.xlabel('time [s]')
 plt.ylabel('Fz [N]')
 
 
 #Torques
 
-plt.subplot(3,2,2)
+plt.subplot(6,2,7)
 plt.plot(time,tx, label='No Filter')
 plt.plot(time, TX, label='LowPassButterworth',linewidth=1)
 plt.plot(time,kalman_filter_est_tx, label='Single State Kalman')
 plt.plot(time,ma_filter_estimates_tx, label='Moving Average')
 plt.legend()
+plt.xlim(10,50)
 plt.xlabel('time [s]')
 plt.ylabel('Tx [N]')
-plt.title('Torque')
+#plt.title('Torque')
 
-plt.subplot(3,2,4)
+plt.subplot(6,2,9)
 plt.plot(time,ty, label='No Filter')
 plt.plot(time, TY, label='LowPassButterworth',linewidth=1)
 plt.plot(time,kalman_filter_est_ty, label='Single State Kalman')
 plt.plot(time,ma_filter_estimates_ty, label='Moving Average')
 plt.legend()
-plt.xlabel('time [s]')
+plt.xlim(10,50)
+#plt.xlabel('time [s]')
 plt.ylabel('Ty [N]')
 
 
-plt.subplot(3,2,6)
+plt.subplot(6,2,11)
 plt.plot(time,tz, label='No Filter')
 plt.plot(time, TZ, label='LowPassButterworth',linewidth=1)
 plt.plot(time,kalman_filter_est_tz, label='Single State Kalman')
 plt.plot(time,ma_filter_estimates_tz, label='Moving Average')
 plt.legend()
+plt.xlim(10,50)
 plt.xlabel('time [s]')
 plt.ylabel('Tz [N]')
 
-plt.suptitle('Low Pass Filter',fontsize=16)
+plt.suptitle('Signal Filtering',fontsize=16)
 plt.show()
 
 
